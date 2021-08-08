@@ -1,0 +1,76 @@
+---
+title: "Atividade Prática 7"
+author: "Elton Dantas de Oliveira Mesquita"
+output:
+  html_document:
+    theme: readable
+    highlight: breezedark
+    toc: true
+    toc_depth: 5
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,message = FALSE,warning = FALSE)
+```
+
+## Bacias hidrográficas do estado da Paraíba
+
+Variáveis:
+
+- Bacia: as bacias hidrográficas do estado da Paraíba;
+- n: número de reservatórios em cada bacia;
+- CapacInstal: volume de água atual em cada bacia;
+- PercCapacTotal: o percentual em relação à capacidade total de cada bacia.
+
+Maiores informações: <a href="http://www.aesa.pb.gov.br/aesa-website/wp-content/uploads/2016/11/PE_02.pdf" target="_blank">AESA</a>
+
+### Pacotes
+```{r}
+#install.packages("tidyverse")
+#install.packages("data.table")
+library(tidyverse)
+library(data.table)
+```
+
+### 1. Importando e tratando os dados
+```{r}
+dados = read_csv("AESA.csv")
+
+
+dados = dados %>%
+  rename(VolumeAtual = `Volume Atual (m³)`,
+         VolumeTotal = `Volume total (%)`,
+         CapacMaxima = `Capac. Máxima (m³)`) %>%
+  mutate(VolumeAtual = str_remove_all(VolumeAtual,"\\."),
+         CapacMaxima = str_remove_all(CapacMaxima,"\\."),
+         VolumeTotal = str_replace_all(VolumeTotal,",",".")) %>% 
+  mutate(CapacMaxima = as.numeric(CapacMaxima),
+         VolumeAtual = as.numeric(VolumeAtual),
+         VolumeTotal = as.numeric(VolumeTotal))
+
+dados
+```
+
+
+### 2. Montando tabela
+```{r}
+AESA = dados %>%
+  group_by(Bacia) %>%
+  summarise(n = n(),
+            CapacInstal = sum(VolumeAtual),
+            PercCapacTotal = sum(VolumeAtual)/sum(CapacMaxima) * 100)
+
+AESA
+```
+
+
+### 3. Exportando a tabela
+```{r}
+fwrite(AESA,"bacias_PB.csv")
+```
+
+
+
