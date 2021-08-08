@@ -1,0 +1,96 @@
+---
+title: "Atividade Prática 6"
+author: "Elton Dantas de Oliveira Mesquita"
+output:
+  html_document:
+    theme: readable
+    highlight: breezedark
+    toc: true
+    toc_depth: 5
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,message = FALSE,warning = FALSE)
+```
+
+## Síntese de casos, óbitos, incidência e mortalidade por Covid-19 no Brasil
+
+### Pacotes
+```{r}
+#install.packages("tidyverse")
+library(tidyverse)
+library(data.table)
+```
+
+### 1. Importando os dados (coletados em 24/07/2021)
+```{r}
+dados2020_1 = fread("HIST_PAINEL_COVIDBR_2020_Parte1_24jul2021.csv",
+                    header=T,sep=";",encoding = "UTF-8")
+dados2020_2 = fread("HIST_PAINEL_COVIDBR_2020_Parte2_24jul2021.csv",
+                    header=T,sep=";",encoding = "UTF-8")
+dados2021_1 = fread("HIST_PAINEL_COVIDBR_2021_Parte1_24jul2021.csv",
+                    header=T,sep=";",encoding = "UTF-8")
+dados2021_2 = fread("HIST_PAINEL_COVIDBR_2021_Parte2_24jul2021.csv",
+                    header=T,sep=";",encoding = "UTF-8")
+```
+Os dados estão em partes e precisamos juntá-los. Antes disso, vamos padronizar as datas para que a junção seja possível.
+
+### 2. Padronizando as datas
+```{r}
+dados2020_1 = dados2020_1 %>% mutate(data = as.Date(data,"%d/%m/%y"))
+dados2020_2 = dados2020_2 %>% mutate(data = as.Date(data))
+dados2021_1 = dados2021_1 %>% mutate(data = as.Date(data))
+dados2021_2 = dados2021_2 %>% mutate(data = as.Date(data))
+```
+
+### 3. Juntando os dados em um único conjunto
+```{r}
+covidBR = bind_rows(dados2020_1,dados2020_2,dados2021_1,dados2021_2)
+```
+
+Resumo dos dados
+```{r}
+summary(covidBR)
+```
+Há valores fantantes em populacaoTCU2019 e isso pode atrapalhar o cálculo de incidência e mortalidade no agrupamento que vamos realizar.
+
+### 4. Preenchendo os dados faltantes
+```{r}
+covidBR = covidBR %>% fill(populacaoTCU2019)
+```
+
+### 5. Montando a tabela 'Síntese de casos, óbitos, incidência e mortalidade'
+
+Tabela com municípios
+```{r}
+tabela = covidBR %>% group_by(regiao,estado,municipio) %>%
+  summarise(casos = sum(casosNovos),
+            obitos = sum(obitosNovos),
+            incidencia = sum(casosNovos/populacaoTCU2019)*100000,
+            mortalidade = sum(obitosNovos/populacaoTCU2019)*100000,
+            atualizacao = last(data))
+tabela
+```
+
+Tabela resumida (sem municípios)
+```{r}
+tabela_resumida = covidBR %>% group_by(regiao,estado) %>%
+  summarise(casos = sum(casosNovos),
+            obitos = sum(obitosNovos),
+            incidencia = sum(casosNovos/populacaoTCU2019)*100000,
+            mortalidade = sum(obitosNovos/populacaoTCU2019)*100000,
+            atualizacao = last(data))
+tabela_resumida
+```
+
+### 6. Exportando as tabelas
+```{r}
+fwrite(tabela,"tabela.csv")
+fwrite(tabela_resumida,"tabela_resumida.csv")
+```
+
+
+
