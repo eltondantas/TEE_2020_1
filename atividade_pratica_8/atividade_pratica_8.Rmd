@@ -1,0 +1,61 @@
+---
+title: "Atividade Prática 8"
+author: "Elton Dantas de Oliveira Mesquita"
+output:
+  html_document:
+    theme: readable
+    highlight: breezedark
+    toc: true
+    toc_depth: 5
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+---
+
+<style> body {text-align: justify} </style>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,message = FALSE,warning = FALSE)
+```
+
+
+### Lendo os dados
+```{r}
+library(tidyverse)
+dados = read_csv("dados_completo.csv")
+dados
+```
+
+### Breve resumo dos dados
+```{r}
+summary(dados)
+```
+
+<br>
+
+### Questões
+
+<br>
+
+1\) Quais melhorias poderiam ser feitas no conjunto de dados, para que seja possível realizar uma análise de qualidade?
+
+Assim que importamos e visualizamos os dados, percebemos alguns pontos que podem atrapalhar a realização de uma análise de dados de qualidade. Esses pontos são:
+
+- As variáveis COD e PERIODO estão como numéricas. Embora seus valores sejam representados em números, essas duas variáveis são categóricas. Uma representa o código de identificação do curso e a outra o período de entrada. Para que possamos realizar um estudo descritivo, com os gráficos adequados, é necessário converter essas variáveis para o tipo 'character' (caractere).
+- As variáveis REOPCAO, VESTIBULAR, VESTIBULAR/ENEM, GRADUADO, REINGRESSO e SISU possuem valores faltantes (NA) e isso torna inviável a manipulação e interpretação dessas variáveis seja para o cálculo de métricas ou para visualização de gráficos. É preciso tratar os valores faltantes dessas variáveis distintamente, levando em consideração o tipo de informação que cada uma fornece.
+
+<br>
+
+2\) Quais tipos de informações poderiam ser coletadas desse conjunto de dados?
+
+A partir desse conjunto de dados, podemos ter informações como por exemplo:
+
+- Cursos com maior número de entradas por transferência, reopção, aluno(a) graduado(a) e reingresso (no geral e por período);
+- Cursos com maior/menor número de vagas ofertadas (no geral e por período);
+- A evolução do número de vagas ofertadas por cada curso ao longo dos períodos observados.
+
+<br>
+
+3\) Quais ferramentas de análise de dados podemos utilizar?
+
+Algumas ferramentas que podemos utilizar para a análise desse conjunto de dados são Excel, Python e R. No caso dessa última, podemos utilizar os pacotes do kit tidyverse para fazer (elegantemente) a importação dos dados (readr), a manipulação dos dados (dplyr) e a visualização dos dados (ggplot2).
