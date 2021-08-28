@@ -1,0 +1,35 @@
+---
+title: "Atividade Prática 11"
+author: "Elton Dantas de Oliveira Mesquita"
+output:
+  html_document:
+    theme: readable
+    highlight: breezedark
+    toc: true
+    toc_depth: 5
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Combinando tabelas com o pacote dplyr
+
+Se você tem dados em múltiplas tabelas, talvez seja necessário combiná-los antes
+de usar as demais funções do pacote dplyr. Combinar dois conjuntos de dados
+através de uma coluna em comum é conhecido como joining ou merging. O pacote
+dplyr oferece muitas opções para isso. Vejamos 
+
+
+```{r}
+library(dplyr)
+```
+
+Observação: se você tem conjuntos de dados em que todas as colunas são as mesmas,
+mas com valores diferentes e você quer concatenar os dados, então a função join
+não é necessária. Use as funções nativas do R rbind e cbind para, respectivamente,
+concatenar os dados por linhas e adicionar novas colunas. Veja o exemplo da
+atividade prática 10.
