@@ -18,7 +18,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Combinando tabelas com o pacote dplyr
 
-Se temos dados em múltiplas tabelas, talvez seja necessário os combinar antes
+Se temos dados em múltiplas tabelas, talvez seja necessário combiná-los antes
 de usar as demais funções do pacote dplyr. Combinar dois conjuntos de dados
 através de uma coluna em comum é conhecido como joining ou merging. O pacote
 dplyr oferece muitas opções para isso.
