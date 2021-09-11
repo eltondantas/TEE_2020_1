@@ -1,4 +1,4 @@
-# Atividade PrÃ¡tica 12
+# Atividade Prática 12
 # Elton Dantas de Oliveira Mesquita
 
 # Pacotes usados
@@ -6,10 +6,10 @@ library(rvest)
 library(dplyr)
 library(stringr)
 
-# Obtendo a pÃ¡gina html
+# Obtendo a página html
 url = read_html("https://www.chancedegol.com.br/br21.htm")
 
-# Extraindo as tabelas da pÃ¡gina contidas nos nodes tipo table
+# Extraindo as tabelas da página contidas nos nodes tipo table
 tables = url %>% html_nodes("table") %>% html_table(header = T)
 
 # Selecionando a tabela 'Jogos Realizados'
@@ -20,8 +20,8 @@ colnames(jogos)[3] = "Placar"
 
 # TransformaÃ§Ãµes nas colunas: nomes, formatos e posiÃ§Ãµes
 jogos = jogos %>%
-  rename(VitoriaMandante = `VitÃ³ria doMandante`,
-         VitoriaVisitante = `VitÃ³ria doVisitante`) %>% 
+  rename(VitoriaMandante = `Vitória doMandante`,
+         VitoriaVisitante = `Vitória doVisitante`) %>% 
   mutate(GolsMandante = as.numeric(str_split(jogos$Placar,"x",simplify = T)[,1]),
          GolsVisitante = as.numeric(str_split(jogos$Placar,"x",simplify = T)[,2]),
          Data = as.Date(Data,format="%d/%m/%Y"),
